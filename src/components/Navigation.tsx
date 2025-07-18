@@ -15,14 +15,17 @@ const Navigation = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
-          <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
-            Discover
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" asChild>
+            <a href="/discover">Discover</a>
           </Button>
-          <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
-            For Business
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" asChild>
+            <a href="/for-business">For Business</a>
           </Button>
-          <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
-            About
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" asChild>
+            <a href="/about">About</a>
+          </Button>
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" asChild>
+            <a href="/contact">Contact</a>
           </Button>
         </div>
 
