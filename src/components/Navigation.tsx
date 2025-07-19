@@ -70,11 +70,11 @@ const Navigation = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="outline" className="hidden lg:flex">
-            Sign In
+          <Button variant="outline" className="hidden lg:flex" asChild>
+            <a href="/signin">Sign In</a>
           </Button>
-          <Button className="hidden lg:flex bg-gradient-primary hover:opacity-90 transition-opacity">
-            Get Started
+          <Button className="hidden lg:flex bg-gradient-primary hover:opacity-90 transition-opacity" asChild>
+            <a href="/register">Get Started</a>
           </Button>
           
           {/* Mobile Menu */}
