@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Star, MapPin, Clock, Filter } from "lucide-react";
+import Autoplay from "embla-carousel-autoplay";
 import restaurantImage1 from "@/assets/restaurant-1.jpg";
 import restaurantImage2 from "@/assets/restaurant-2.jpg";
 import restaurantImage3 from "@/assets/restaurant-3.jpg";
@@ -62,7 +64,6 @@ const allRestaurants = [
 ];
 
 const Discover = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedOccasion, setSelectedOccasion] = useState("all");
   const [sortBy, setSortBy] = useState("rating");
 
@@ -93,48 +94,43 @@ const Discover = () => {
           </div>
 
           {/* Featured Carousel */}
-          <div className="relative max-w-4xl mx-auto mb-12">
-            <div className="overflow-hidden rounded-2xl">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
+          <div className="max-w-4xl mx-auto mb-12">
+            <Carousel
+              plugins={[
+                Autoplay({
+                  delay: 3500,
+                })
+              ]}
+              className="w-full"
+            >
+              <CarouselContent>
                 {featuredRestaurants.map((restaurant) => (
-                  <div key={restaurant.id} className="w-full flex-shrink-0 relative">
-                    <img 
-                      src={restaurant.image} 
-                      alt={restaurant.name}
-                      className="w-full h-96 object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                    <div className="absolute bottom-6 left-6 text-white">
-                      <Badge className="mb-2 bg-primary">{restaurant.occasion}</Badge>
-                      <h3 className="text-2xl font-bold mb-2">{restaurant.name}</h3>
-                      <p className="text-white/90">{restaurant.description}</p>
-                      <div className="flex items-center mt-2">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                        <span className="text-white/90">{restaurant.rating}</span>
-                        <MapPin className="h-4 w-4 text-white/90 ml-4 mr-1" />
-                        <span className="text-white/90">{restaurant.location}</span>
+                  <CarouselItem key={restaurant.id}>
+                    <div className="relative rounded-2xl overflow-hidden">
+                      <img 
+                        src={restaurant.image} 
+                        alt={restaurant.name}
+                        className="w-full h-96 object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                      <div className="absolute bottom-6 left-6 text-white">
+                        <Badge className="mb-2 bg-primary">{restaurant.occasion}</Badge>
+                        <h3 className="text-2xl font-bold mb-2">{restaurant.name}</h3>
+                        <p className="text-white/90">{restaurant.description}</p>
+                        <div className="flex items-center mt-2">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                          <span className="text-white/90">{restaurant.rating}</span>
+                          <MapPin className="h-4 w-4 text-white/90 ml-4 mr-1" />
+                          <span className="text-white/90">{restaurant.location}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </CarouselItem>
                 ))}
-              </div>
-            </div>
-            
-            {/* Carousel Controls */}
-            <div className="flex justify-center space-x-2 mt-4">
-              {featuredRestaurants.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    currentSlide === index ? 'bg-primary' : 'bg-muted'
-                  }`}
-                />
-              ))}
-            </div>
+              </CarouselContent>
+              <CarouselPrevious className="left-4" />
+              <CarouselNext className="right-4" />
+            </Carousel>
           </div>
         </div>
       </section>
