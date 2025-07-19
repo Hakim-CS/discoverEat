@@ -1,5 +1,7 @@
-import { Search, Heart, User, Menu } from "lucide-react";
+import { Search, Heart, User, Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import SearchBar from "@/components/SearchBar";
 
 const Navigation = () => {
   return (
@@ -14,7 +16,7 @@ const Navigation = () => {
         </a>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden lg:flex items-center space-x-6">
           <Button variant="ghost" className="text-muted-foreground hover:text-foreground" asChild>
             <a href="/discover">Discover</a>
           </Button>
@@ -29,26 +31,54 @@ const Navigation = () => {
           </Button>
         </div>
 
+        {/* Search Bar - Desktop */}
+        <div className="hidden md:block">
+          <SearchBar variant="navbar" onSearch={(query) => console.log('Navbar search:', query)} />
+        </div>
+
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
+          <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Heart className="h-5 w-5" />
+          
+          <Button variant="ghost" size="icon" asChild>
+            <a href="/favorites">
+              <Heart className="h-5 w-5" />
+            </a>
           </Button>
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <User className="h-5 w-5" />
-          </Button>
-          <Button variant="outline" className="hidden md:flex">
+
+          {/* Profile Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                <span className="hidden sm:inline">Account</span>
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <a href="/profile" className="cursor-pointer">My Profile</a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a href="/favorites" className="cursor-pointer">My Favorites</a>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button variant="outline" className="hidden lg:flex">
             Sign In
           </Button>
-          <Button className="hidden md:flex bg-gradient-primary hover:opacity-90 transition-opacity">
+          <Button className="hidden lg:flex bg-gradient-primary hover:opacity-90 transition-opacity">
             Get Started
           </Button>
           
           {/* Mobile Menu */}
-          <Button variant="ghost" size="icon" className="md:hidden">
+          <Button variant="ghost" size="icon" className="lg:hidden">
             <Menu className="h-5 w-5" />
           </Button>
         </div>

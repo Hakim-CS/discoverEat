@@ -1,7 +1,6 @@
-import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import heroImage from "@/assets/hero-image.jpg";
+import SearchBar from "@/components/SearchBar";
 
 const HeroSection = () => {
   return (
@@ -34,32 +33,13 @@ const HeroSection = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="bg-card/95 backdrop-blur-sm rounded-2xl p-6 shadow-warm max-w-2xl mx-auto">
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input 
-                    placeholder="What type of dining experience?" 
-                    className="pl-10 h-12 border-2 focus:border-primary"
-                  />
-                </div>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input 
-                    placeholder="Location" 
-                    className="pl-10 h-12 border-2 focus:border-primary"
-                  />
-                </div>
-              </div>
-              <Button 
-                size="lg" 
-                className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-opacity text-lg font-semibold"
-              >
-                Discover Restaurants
-              </Button>
-            </div>
-          </div>
+          <SearchBar 
+            variant="hero" 
+            onSearch={(query, location) => {
+              console.log('Searching for:', query, 'in', location);
+              // Handle search logic here
+            }} 
+          />
 
           {/* Occasion Tags */}
           <div className="flex flex-wrap justify-center gap-3">
