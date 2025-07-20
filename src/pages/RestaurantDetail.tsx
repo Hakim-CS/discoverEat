@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Heart, Star, MapPin, Clock, Phone, Globe, Calendar, X } from "lucide-react";
+import { ArrowLeft, Heart, Star, MapPin, Clock, Phone, Globe, Calendar, X, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Map } from "@/components/Map";
 
 // Mock data for restaurant details - in real app this would come from API
 const getRestaurantData = (id: string) => ({
@@ -16,6 +17,7 @@ const getRestaurantData = (id: string) => ({
   cuisine: "Italian",
   priceRange: "$$$",
   location: "123 Main Street, Downtown District",
+  coordinates: { latitude: 40.7128, longitude: -74.0060 },
   openHours: "5:00 PM - 11:00 PM",
   phone: "(555) 123-4567",
   website: "www.bellavista.com",
@@ -77,6 +79,7 @@ const RestaurantDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   
   if (!id) return null;
   
@@ -264,7 +267,40 @@ const RestaurantDetail = () => {
                 <Phone className="h-4 w-4 mr-2" />
                 Call Restaurant
               </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => setShowMap(!showMap)}
+              >
+                <MapIcon className="h-4 w-4 mr-2" />
+                {showMap ? 'Hide Map' : 'Show on Map'}
+              </Button>
             </div>
+
+            {/* Map */}
+            {showMap && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Location</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Map
+                    latitude={restaurant.coordinates.latitude}
+                    longitude={restaurant.coordinates.longitude}
+                    zoom={15}
+                    markers={[
+                      {
+                        latitude: restaurant.coordinates.latitude,
+                        longitude: restaurant.coordinates.longitude,
+                        title: restaurant.name,
+                        description: restaurant.location
+                      }
+                    ]}
+                    className="w-full h-64"
+                  />
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
