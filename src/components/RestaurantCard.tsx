@@ -1,4 +1,5 @@
 import { Heart, Star, MapPin, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -113,11 +114,13 @@ const RestaurantCard = ({
         </div>
 
         {/* Action Button */}
-        <Button 
-          className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
-        >
-          View Details
-        </Button>
+        <Link to={`/restaurant/${id}`}>
+          <Button 
+            className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
+          >
+            View Details
+          </Button>
+        </Link>
       </div>
     </div>
   );
