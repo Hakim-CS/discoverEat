@@ -1,21 +1,55 @@
-import { useState } from "react";
-import { Search, MapPin, Navigation } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, MapPin, Navigation, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LocationSearch } from "./LocationSearch";
+import { SearchSuggestions } from "./SearchSuggestions";
+import { useRestaurantSearch } from "@/hooks/useRestaurantSearch";
 
 interface SearchBarProps {
   variant?: "hero" | "navbar";
   onSearch?: (query: string, location: string) => void;
+  onResults?: (results: any[]) => void;
 }
 
-const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
-  const [query, setQuery] = useState("");
-  const [location, setLocation] = useState("");
+const SearchBar = ({ variant = "hero", onSearch, onResults }: SearchBarProps) => {
+  const {
+    searchQuery,
+    setSearchQuery,
+    locationQuery,
+    setLocationQuery,
+    results,
+    suggestions,
+    isSearching,
+    performSearch,
+    searchByLocation
+  } = useRestaurantSearch();
+  
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [showLocationSearch, setShowLocationSearch] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (results.length > 0) {
+      onResults?.(results);
+    }
+  }, [results, onResults]);
 
   const handleSearch = () => {
-    onSearch?.(query, location);
+    performSearch();
+    onSearch?.(searchQuery, locationQuery);
+    setShowSuggestions(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -24,25 +58,58 @@ const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
     }
   };
 
+  const handleSuggestionClick = (suggestion: any) => {
+    if (suggestion.type === 'restaurant') {
+      setSearchQuery(suggestion.value);
+    } else if (suggestion.type === 'location') {
+      setLocationQuery(suggestion.value);
+    } else {
+      setSearchQuery(suggestion.value);
+    }
+    setShowSuggestions(false);
+    performSearch(suggestion.value, locationQuery);
+  };
+
+  const handleLocationSearch = () => {
+    searchByLocation();
+    setShowLocationSearch(false);
+  };
+
   if (variant === "navbar") {
     return (
-      <div className="relative max-w-sm">
-        <div className="relative flex items-center">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search restaurants..." 
-            className="pl-10 pr-10 h-9"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
+      <div ref={searchRef} className="relative max-w-md">
+        <div className="relative flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search restaurants..." 
+              className="pl-10 pr-4 h-9"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onKeyPress={handleKeyPress}
+              onFocus={() => setShowSuggestions(true)}
+            />
+            <SearchSuggestions
+              suggestions={suggestions}
+              onSuggestionClick={handleSuggestionClick}
+              isVisible={showSuggestions}
+            />
+          </div>
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm"
-            className="absolute right-1 h-7 w-7 p-0"
-            onClick={() => setShowLocationSearch(!showLocationSearch)}
+            className="h-9 px-3"
+            onClick={handleLocationSearch}
+            disabled={isSearching}
           >
-            <Navigation className="h-3 w-3" />
+            {isSearching ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Navigation className="h-4 w-4" />
+            )}
           </Button>
         </div>
         {showLocationSearch && (
@@ -55,7 +122,7 @@ const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div ref={searchRef} className="space-y-6">
       <div className="bg-card/95 backdrop-blur-sm rounded-2xl p-6 shadow-warm max-w-2xl mx-auto">
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -64,9 +131,18 @@ const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
               <Input 
                 placeholder="What type of dining experience?" 
                 className="pl-10 h-12 border-2 focus:border-primary"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSuggestions(true);
+                }}
                 onKeyPress={handleKeyPress}
+                onFocus={() => setShowSuggestions(true)}
+              />
+              <SearchSuggestions
+                suggestions={suggestions}
+                onSuggestionClick={handleSuggestionClick}
+                isVisible={showSuggestions}
               />
             </div>
             <div className="relative flex gap-2">
@@ -75,8 +151,8 @@ const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
                 <Input 
                   placeholder="Location" 
                   className="pl-10 h-12 border-2 focus:border-primary"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
                 />
               </div>
@@ -84,9 +160,14 @@ const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
                 variant="outline"
                 size="lg"
                 className="h-12 px-4"
-                onClick={() => setShowLocationSearch(!showLocationSearch)}
+                onClick={handleLocationSearch}
+                disabled={isSearching}
               >
-                <Navigation className="h-5 w-5" />
+                {isSearching ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Navigation className="h-5 w-5" />
+                )}
               </Button>
             </div>
           </div>
@@ -94,8 +175,16 @@ const SearchBar = ({ variant = "hero", onSearch }: SearchBarProps) => {
             size="lg" 
             className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-opacity text-lg font-semibold"
             onClick={handleSearch}
+            disabled={isSearching}
           >
-            Discover Restaurants
+            {isSearching ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Searching...
+              </div>
+            ) : (
+              "Discover Restaurants"
+            )}
           </Button>
         </div>
       </div>

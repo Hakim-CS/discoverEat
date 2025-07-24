@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-image.jpg";
 import SearchBar from "@/components/SearchBar";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onSearchResults?: (results: any[]) => void;
+}
+
+const HeroSection = ({ onSearchResults }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -37,8 +41,8 @@ const HeroSection = () => {
             variant="hero" 
             onSearch={(query, location) => {
               console.log('Searching for:', query, 'in', location);
-              // Handle search logic here
-            }} 
+            }}
+            onResults={onSearchResults}
           />
 
           {/* Occasion Tags */}

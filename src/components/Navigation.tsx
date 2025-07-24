@@ -33,7 +33,16 @@ const Navigation = () => {
 
         {/* Search Bar - Desktop */}
         <div className="hidden md:block">
-          <SearchBar variant="navbar" onSearch={(query) => console.log('Navbar search:', query)} />
+          <SearchBar 
+            variant="navbar" 
+            onSearch={(query, location) => {
+              console.log('Navbar search:', query, location);
+              // Navigate to search results or handle search
+              if (query || location) {
+                window.location.href = `/?search=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+              }
+            }} 
+          />
         </div>
 
         {/* Action Buttons */}
