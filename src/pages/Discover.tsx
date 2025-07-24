@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
+import RestaurantCard from "@/components/RestaurantCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -185,37 +186,19 @@ const Discover = () => {
             <div className="md:w-3/4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {sortedRestaurants.map((restaurant) => (
-                  <Card key={restaurant.id} className="overflow-hidden hover:shadow-warm transition-shadow duration-300">
-                    <div className="relative">
-                      <img 
-                        src={restaurant.image} 
-                        alt={restaurant.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      <Badge className="absolute top-3 left-3 bg-primary">
-                        {restaurant.occasion}
-                      </Badge>
-                    </div>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-lg mb-2">{restaurant.name}</h3>
-                      <p className="text-muted-foreground text-sm mb-3">{restaurant.description}</p>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                          <span className="text-sm font-medium">{restaurant.rating}</span>
-                        </div>
-                        <div className="flex items-center text-muted-foreground text-sm">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {restaurant.location}
-                        </div>
-                      </div>
-                      
-                      <Button className="w-full mt-3" variant="outline">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <RestaurantCard
+                    key={restaurant.id}
+                    id={restaurant.id.toString()}
+                    name={restaurant.name}
+                    image={restaurant.image}
+                    rating={restaurant.rating}
+                    reviewCount={145}
+                    cuisine="Italian"
+                    priceRange="$$$"
+                    location={restaurant.location}
+                    openHours="5:00 PM - 11:00 PM"
+                    occasions={[restaurant.occasion]}
+                  />
                 ))}
               </div>
             </div>

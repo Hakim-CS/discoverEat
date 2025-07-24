@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Heart, Star, MapPin, Clock, Phone, Globe, Calendar, X, Map as MapIcon } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,26 +111,47 @@ const RestaurantDetail = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <div className="relative h-64 md:h-96 overflow-hidden">
-        <img 
-          src={restaurant.image} 
-          alt={restaurant.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute bottom-6 left-6 text-white">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">{restaurant.name}</h1>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1">
-              <Star className="h-5 w-5 fill-accent text-accent" />
-              <span className="font-semibold">{restaurant.rating}</span>
-              <span className="text-white/80">({restaurant.reviewCount} reviews)</span>
-            </div>
-            <span className="text-white/80">{restaurant.cuisine}</span>
-            <span className="text-white/80">{restaurant.priceRange}</span>
-          </div>
-        </div>
+      {/* Hero Carousel Section */}
+      <div className="relative">
+        <Carousel
+          plugins={[
+            Autoplay({
+              delay: 4000,
+            })
+          ]}
+          className="w-full"
+        >
+          <CarouselContent>
+            {restaurant.gallery.map((image, index) => (
+              <CarouselItem key={index}>
+                <div className="relative h-64 md:h-96 overflow-hidden">
+                  <img 
+                    src={image} 
+                    alt={`${restaurant.name} gallery ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  {index === 0 && (
+                    <div className="absolute bottom-6 left-6 text-white">
+                      <h1 className="text-3xl md:text-4xl font-bold mb-2">{restaurant.name}</h1>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
+                          <Star className="h-5 w-5 fill-accent text-accent" />
+                          <span className="font-semibold">{restaurant.rating}</span>
+                          <span className="text-white/80">({restaurant.reviewCount} reviews)</span>
+                        </div>
+                        <span className="text-white/80">{restaurant.cuisine}</span>
+                        <span className="text-white/80">{restaurant.priceRange}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4" />
+          <CarouselNext className="right-4" />
+        </Carousel>
       </div>
 
       {/* Main Content */}
