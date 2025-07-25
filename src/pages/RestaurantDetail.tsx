@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Map } from "@/components/Map";
+import { designTokens } from "@/lib/design-tokens";
 
 // Mock data for restaurant details - in real app this would come from API
 const getRestaurantData = (id: string) => ({
@@ -101,11 +102,18 @@ const RestaurantDetail = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsFavorite(!isFavorite)}
-              className={`rounded-full ${
-                isFavorite ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-foreground'
+              className={`rounded-full favorite-button ${
+                isFavorite 
+                  ? 'text-[var(--color-favorite-text)] hover:text-[var(--color-favorite-hover-text)]' 
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
+              aria-label={isFavorite ? designTokens.ariaLabels.unfavoriteButton : designTokens.ariaLabels.favoriteButton}
+              aria-pressed={isFavorite}
             >
-              <Heart className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} />
+              <Heart className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} aria-hidden="true" />
+              <span className="sr-only">
+                {isFavorite ? designTokens.patterns.favorite : designTokens.patterns.unfavorite}
+              </span>
             </Button>
           </div>
         </div>

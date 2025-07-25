@@ -2,6 +2,7 @@ import { Heart, Star, MapPin, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { designTokens } from "@/lib/design-tokens";
 
 interface RestaurantCardProps {
   id: string;
@@ -43,18 +44,30 @@ const RestaurantCard = ({
         />
         <div className="absolute inset-0 bg-gradient-card" />
         
-        {/* Favorite Button */}
+        {/* Favorite Button - Fixed Red Pool vulnerability */}
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute top-3 right-3 rounded-full backdrop-blur-sm transition-colors ${
-            isFavorite 
-              ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30' 
+          className={`
+            absolute top-3 right-3 rounded-full backdrop-blur-sm transition-colors favorite-button
+            ${isFavorite 
+              ? 'bg-[var(--color-favorite-bg)] text-[var(--color-favorite-text)] hover:bg-[var(--color-favorite-hover-bg)] hover:text-[var(--color-favorite-hover-text)]' 
               : 'bg-background/20 text-white hover:bg-background/30'
-          }`}
+            }
+          `}
           onClick={() => onFavoriteToggle?.(id)}
+          aria-label={isFavorite ? designTokens.ariaLabels.unfavoriteButton : designTokens.ariaLabels.favoriteButton}
+          aria-pressed={isFavorite}
+          role="button"
         >
-          <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
+          <Heart 
+            className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} 
+            aria-hidden="true"
+          />
+          {/* Accessibility enhancement: text indicator for screen readers */}
+          <span className="sr-only">
+            {isFavorite ? designTokens.patterns.favorite : designTokens.patterns.unfavorite}
+          </span>
         </Button>
 
         {/* Occasion Badges */}

@@ -59,20 +59,23 @@ All colors MUST be HSL.
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+    /* Red Pool Security Fix - Centralized favorite color tokens */
+    --color-danger-50: 254 242 242;
+    --color-danger-500: 239 68 68;
+    --color-danger-600: 220 38 38;
+    
+    --color-favorite-bg: rgb(239 68 68 / 0.2);
+    --color-favorite-text: rgb(239 68 68);
+    --color-favorite-hover-bg: rgb(239 68 68 / 0.3);
+    --color-favorite-hover-text: rgb(220 38 38);
+
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -104,6 +107,13 @@ All colors MUST be HSL.
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
+    /* Dark theme adjustments for Red Pool colors */
+    --color-favorite-bg: rgb(185 28 28 / 0.3);
+    --color-favorite-text: rgb(248 113 113);
+    --color-favorite-hover-bg: rgb(185 28 28 / 0.4);
+    --color-favorite-hover-text: rgb(252 165 165);
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -122,5 +132,42 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Red Pool Security Enhancements */
+@layer utilities {
+  /* High contrast mode for accessibility */
+  @media (prefers-contrast: high) {
+    :root {
+      --color-favorite-text: rgb(220 38 38);
+      --color-favorite-hover-text: rgb(127 29 29);
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .favorite-button {
+      transition: none !important;
+    }
+  }
+  
+  /* Screen reader only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  
+  /* Focus visible for keyboard navigation */
+  .favorite-button:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 }

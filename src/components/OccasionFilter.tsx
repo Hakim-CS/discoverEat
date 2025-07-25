@@ -1,5 +1,6 @@
 import { Heart, Users, Briefcase, PartyPopper, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { designTokens } from "@/lib/design-tokens";
 
 const occasions = [
   { 
@@ -7,35 +8,45 @@ const occasions = [
     label: "Date Night", 
     icon: Heart, 
     description: "Romantic and intimate",
-    color: "text-red-500" 
+    color: `text-[${designTokens.colors.occasion.dateNight}]`,
+    pattern: designTokens.patterns.dateNight,
+    ariaLabel: designTokens.ariaLabels.dateNightOccasion
   },
   { 
     id: "family", 
     label: "Family", 
     icon: Users, 
     description: "Family-friendly dining",
-    color: "text-blue-500" 
+    color: `text-[${designTokens.colors.occasion.family}]`,
+    pattern: designTokens.patterns.family,
+    ariaLabel: designTokens.ariaLabels.familyOccasion
   },
   { 
     id: "business", 
     label: "Business", 
     icon: Briefcase, 
     description: "Professional atmosphere",
-    color: "text-secondary" 
+    color: "text-secondary",
+    pattern: designTokens.patterns.business,
+    ariaLabel: designTokens.ariaLabels.businessOccasion
   },
   { 
     id: "friends", 
     label: "Friends", 
     icon: PartyPopper, 
     description: "Casual and fun",
-    color: "text-accent" 
+    color: "text-accent",
+    pattern: designTokens.patterns.friends,
+    ariaLabel: designTokens.ariaLabels.friendsOccasion
   },
   { 
     id: "special", 
     label: "Special Events", 
     icon: Star, 
     description: "Memorable celebrations",
-    color: "text-primary" 
+    color: "text-primary",
+    pattern: designTokens.patterns.special,
+    ariaLabel: designTokens.ariaLabels.specialOccasion
   }
 ];
 
@@ -75,9 +86,16 @@ const OccasionFilter = ({ selectedOccasion, onOccasionChange }: OccasionFilterPr
                     : 'border-border hover:border-primary/50 hover:bg-card shadow-card'
                   }
                 `}
+                aria-label={occasion.ariaLabel}
+                aria-pressed={isSelected}
+                role="button"
               >
                 <div className={`p-4 rounded-full ${isSelected ? 'bg-primary/20' : 'bg-muted'} transition-colors`}>
-                  <Icon className={`h-8 w-8 ${isSelected ? 'text-primary' : occasion.color}`} />
+                  <Icon className={`h-8 w-8 ${isSelected ? 'text-primary' : occasion.color}`} aria-hidden="true" />
+                  {/* Accessibility enhancement: emoji indicator */}
+                  <span className="sr-only" aria-label={`${occasion.label} - ${occasion.pattern}`}>
+                    {occasion.pattern}
+                  </span>
                 </div>
                 <div className="text-center">
                   <h3 className={`font-semibold text-lg ${isSelected ? 'text-primary' : 'text-foreground'}`}>
